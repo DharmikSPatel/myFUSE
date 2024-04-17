@@ -141,9 +141,11 @@ int get_node_by_path(const char *path, uint16_t ino, struct inode *inode) {
 int rufs_mkfs() {
 
 	// Call dev_init() to initialize (Create) Diskfile
-
+	dev_init(diskfile_path);
+	
 	// write superblock information
-
+	struct superblock* sb_buf = (struct superblock*)malloc(sizeof(struct superblock));
+	
 	// initialize inode bitmap
 
 	// initialize data block bitmap
@@ -246,7 +248,7 @@ static int rufs_rmdir(const char *path) {
 }
 
 static int rufs_releasedir(const char *path, struct fuse_file_info *fi) {
-c// For this project, you don't need to fill this function
+// For this project, you don't need to fill this function
 	// But DO NOT DELETE IT!
     return 0;
 }
@@ -371,12 +373,12 @@ static struct fuse_operations rufs_ope = {
 
 
 int main(int argc, char *argv[]) {
-	int fuse_stat;
+	int fuse_stat = 0;
 
 	getcwd(diskfile_path, PATH_MAX);
 	strcat(diskfile_path, "/DISKFILE");
-
-	fuse_stat = fuse_main(argc, argv, &rufs_ope, NULL);
+	printf("Hello world\n");
+	//fuse_stat = fuse_main(argc, argv, &rufs_ope, NULL);
 
 	return fuse_stat;
 }

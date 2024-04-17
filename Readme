@@ -1,0 +1,58 @@
+Break down
+Make file:
+- make sure there is a dir at /tmp/dsp187/mountdir
+- run makefile
+- run ./rufs -s /tmp/dsp187/mountdir
+- to check if mounted: 
+  - see if findmnt cmd has this line"
+  - "│ └─/tmp/dsp187/mountdir                      rufs                                     fuse.rufs         rw,nosuid,nodev,relatime,user_id=90443,group_id=1905221765"
+- to unmount:
+  - run fusermount -u /tmp/dsp187/mountdir
+Questions:
+- 
+
+Block i/o layer:
+- all implemented
+
+Bitmap:
+- implement get_avail_ino(), and get_avail_blkno()
+
+Inode:
+- readi
+- writei
+
+Directory and Namei:
+- dir_find
+- dir_add
+- get_node_by_path
+
+The start:
+- rufs_mkfs()
+
+File System handlers
+- rufs_init
+- rufs_destroy
+- rufs_getattr
+
+- rufs_opendir - cd
+- rufs_readdir - ls
+- rufs_mkdir - mkdir
+
+
+- rufs_create - touch
+- rufs_open
+- rufs_read
+- rufs_write
+
+
+
+However we will say the following steps:
+1. rufs_mkfs, rufs_init, and rufs_destroy should probably be the first place to start as you need a “disk”
+to even start
+2. You should probably implement all the helper functions as you will make good use of them when
+implementing the rest of the rufs functions.
+3. The bitmap operations are the easiest to implement
+4. The inode helper operations (readi and writei) are the second easiest
+5. The directory operations are the hardest one
+6. Once you implement some of the helper functions, you can start using them within the rest of the rufs
+functions you have to implement
