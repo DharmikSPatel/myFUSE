@@ -6,7 +6,7 @@
  *
  */
 
-#include <linux/limits.h>
+//#include <linux/limits.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -28,7 +28,7 @@ struct superblock {
 	uint32_t	d_start_blk;		/* start block of data block region */
 };
 
-struct inode {
+struct inode { //size of 256 on macbook
 	uint16_t	ino;				/* inode number */
 	uint16_t	valid;				/* validity of the inode */
 	uint32_t	size;				/* size of the file */

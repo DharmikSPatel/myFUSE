@@ -18,7 +18,7 @@
 #include "block.h"
 
 //Disk size set to 32MB
-#define DISK_SIZE	32*1024*1024
+#define DISK_SIZE	32*1024*1024 //max num of blocks = 8,192 for BLOCK_SIZE 4096
 
 int diskfile = -1;
 
