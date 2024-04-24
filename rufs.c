@@ -64,6 +64,18 @@ void my_print_mag(const char *format, ...)
 		printf(ANSI_COLOR_RESET "\n");
 	}
 }
+/**
+ * Always print, no matter DEBUG
+ */
+void my_print_always(const char *format, ...)
+{
+	va_list args;
+	printf(ANSI_COLOR_MAGENTA);
+	va_start(args, format);
+	vprintf(format, args);
+	va_end(args);
+	printf(ANSI_COLOR_RESET "\n");
+}
 
 // Declare your in-memory data structures here
 struct superblock *sb = NULL;
@@ -107,6 +119,7 @@ int get_avail_blkno()
 			break;
 	}
 	// Step 3: Update data block bitmap and write to disk
+	//my_print_always("setting bitmap at i:%d", i);
 	set_bitmap(dblock_bm, i);
 	bio_write(sb->d_bitmap_blk, dblock_bm);
 	return i;
@@ -538,10 +551,23 @@ static void *rufs_init(struct fuse_conn_info *conn)
 
 	return NULL;
 }
-
+int amount_of_dblocks_used(){
+	bio_read(sb->d_bitmap_blk, dblock_bm);
+	int count = 0;
+	for (int i = 0; i < sb->max_dnum; i++)
+	{
+		if (get_bitmap(dblock_bm, i) == 1)
+			count++;
+	}
+	return count;
+	
+}
 static void rufs_destroy(void *userdata)
 {
 	my_print("DESTROY START");
+	//calculate how many d blocks used for report:
+	my_print_always("Amount of dblocks used on this DISKFILE: %d dblocks", amount_of_dblocks_used());
+	
 	// Step 1: De-allocate in-memory data structures
 	free(sb);
 	free(inode_bm);
