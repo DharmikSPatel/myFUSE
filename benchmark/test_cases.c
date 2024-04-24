@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <dirent.h>
+#include <time.h>
 
 /* You need to change this macro to your TFS mount point*/
 #define TESTDIR "/tmp/dsp187/mountdir"
@@ -22,7 +23,7 @@
 char buf[BLOCKSIZE];
 
 int main(int argc, char **argv) {
-
+	clock_t start = clock();
 	int i, fd = 0, ret = 0;
 	struct stat st;
 
@@ -134,5 +135,7 @@ int main(int argc, char **argv) {
 	}
 
 	printf("Benchmark completed \n");
+	clock_t end = clock();
+	printf("CPU Time Taken: %f milli seconds\n",((end - start) / (double)CLOCKS_PER_SEC * 1000));
 	return 0;
 }
