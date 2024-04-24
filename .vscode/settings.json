@@ -18,6 +18,7 @@
         "tuple": "c",
         "type_traits": "c",
         "utility": "c",
-        "algorithm": "c"
+        "algorithm": "c",
+        "errno.h": "c"
     }
 }
