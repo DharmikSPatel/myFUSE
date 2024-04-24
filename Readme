@@ -15,7 +15,7 @@ Benchmarks:
   - Run time: 1.4 milli seconds
   - Number of data blocks used: 123 dblocks
 - test_cases.c:
-  - Run time: 1.79 milli seconds
+  - Run time: 2.1 milli seconds
   - Number of data blocks used: 123 dblocks
 - Notes:
   - Run time was calculated using clock() from time.h in milli seconds
