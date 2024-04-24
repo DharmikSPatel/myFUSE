@@ -38,6 +38,8 @@ Implementation:
     rufs_getattr:
       - this would be called a lot of times by FUSE
       - if a file/dir was not found, then it would return -ENOENT and set errono to ENOENT.
+      - Note on perm for REG files:
+        - Abhilash, TA, said we can ignore the perms while creating a file for this project. so I just set them to rw-r--r--. the bechmarks create files with rw-rw-rw-. But that is not important for this project 
   - Helper Fucntions:
     my_print:
       - print only when DEBUG was set to 1, except the value of DUBUG did not matter in my_print_always().
