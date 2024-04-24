@@ -610,7 +610,7 @@ static int rufs_getattr(const char *path, struct stat *stbuf)
 		if(S_ISDIR(in->type))
 			stbuf->st_mode = in->type | 0755; //0777
 		else //reg file
-			stbuf->st_mode = in->type | 0644;  //TODO: 0666 in testcases
+			stbuf->st_mode = in->type | 0644;  //rw-r--r--. the bechmarks makes files with rw-rw-rw-
 	}
 
 	free(in);
