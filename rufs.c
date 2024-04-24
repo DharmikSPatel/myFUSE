@@ -919,20 +919,22 @@ static int rufs_write(const char *path, const char *buffer, size_t size, off_t o
 
 	int sow_i = offset / BLOCK_SIZE;
 	int i = sow_i;
+	int eow_i = (offset + size) / BLOCK_SIZE;
 	int rem = size;
 	int total = 0;
 	my_print("starting in Block i:%d|%d|", i, f_inode->direct_ptr[i]);
 	my_print("starting while loop");
 	while(rem > 0 && i < MAX_DIRECT_PTRS) {
 		int start = (i == sow_i) ? (offset % BLOCK_SIZE) : 0;
+		int data_in_block = ((i == eow_i) ? (offset + size) % BLOCK_SIZE : BLOCK_SIZE) - start;
 		int bytes_to_write = (rem > (BLOCK_SIZE - start)) ? (BLOCK_SIZE - start) : rem;
 
 		if(f_inode->direct_ptr[i] == INVALID_DBLOCK) {
 			f_inode->direct_ptr[i] = get_avail_blkno();
 			my_print("New Block Allocated at i:%d|%d|", i , f_inode->direct_ptr[i]);
-		} else if(i == sow_i){
+		} else if(i == sow_i || i == eow_i){
 			bio_read(sb->d_start_blk + f_inode->direct_ptr[i], data_block);
-		} 
+		}
 		memcpy(data_block + start, buffer, bytes_to_write);
 		bio_write(sb->d_start_blk + f_inode->direct_ptr[i], data_block);
 		my_print("Writen |%d| starting from |%d| @ block i:%d|%d|w|%d|", bytes_to_write, start, i, f_inode->direct_ptr[i], (BLOCK_SIZE - start));

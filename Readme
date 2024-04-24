@@ -18,41 +18,83 @@ Benchmarks:
   - Run time: 1.79 milli seconds
   - Number of data blocks used: 123 dblocks
 - Notes:
-  - Run time was calculated using 
+  - Run time was calculated using clock() from time.h in milli seconds
   - Number of data blocks used, does not include superblocks, inode blocks, and bitmap blocks. It is only the data blocks.
     - just printed out the number of set bits in dblock_bm when rufs_destroy was called
 
 Implementation:
-  -
-The report should contain the following things:
-• Partners names and netids
-• Details on the total number of blocks used when running the sample benchmark, the time to run the
-benchmark, and briefly explain how you implemented the code
-• Any additional steps that we should follow to compile your code
-• Any difficulties and issues you faced when completing the project
-• If you had issues you were not able to resolve, describe what you think went wrong and how you think
-you could have solved them
-• Collaboration and References: State clearly all people and external resources (including on the Internet)
-that you consulted. What was the nature of your collaboration or usage of these resources?
+  - There were 4 sets of fucntions that we implemented. The entry functions, the helper functions, dir functions and file functions
+  - Entry Functions: 
+    rufs_mkfs:
+      - this was called everytime we were starting from a unforamted DISKFILE
+      - it setup the root dir, with a single child dir '.'
+      - we also setup the bitmaps with calloc to make sure they were all zero
+    rufs_init:
+      - the entry point of FUSE. if the disk was already foramtted, we just loaded the superblock into mem.
+      - this also served as a test bed for our helper functions before we implemented the dir and file functions
+    rufs_destroy:
+      - if the program exited with ^C, this function would get called, and free all the mem, and close the DISKFILE
+      - we also printed the amount dblocks used at this point. see section above on Bechmarks.
+    rufs_getattr:
+      - this would be called a lot of times by FUSE
+      - if a file/dir was not found, then it would return -ENOENT and set errono to ENOENT.
+  - Helper Fucntions:
+    my_print:
+      - print only when DEBUG was set to 1, except the value of DUBUG did not matter in my_print_always().
+      - these set of functions were a wrapper around printf, and helped us debug the code effectvity with the diffrent color outputs
+    bitmap functios:
+      - using the already provided bitmap functions, we implemented get_avail_ino() and get_avail_blkno().
+      - every time we would run these 2 fucntions, we would make sure to do bio_read() and bio_write(), to ensure our changes were presistent on disk
+    readi() and writei():
+      - used to write and read inodes
+      - made sure to calculate the proper offset needed since there could be multiple inodes in 1 inode block
+    bio_read() and bio_write():
+      - although these implementations were provided, we made sure to that every time we used, we would:
+        1. make sure the buffer was of size BLOCK_SIZE
+        2. if we were filling the buffer in from scratch, and not from bio_read(), we would calloc the mem used by buffer
+        3. when writing data blocks that were stored in the direct pointers, we would always add 'sb->d_start_blk'
+    dir_add():
+      - used to add a file or subdir to a given parrent_dir
+      - we would make sure to update the parrent_dir hardlink counter
+      - we would also calloc a new block if needed to add a new dirent
+      - thoroughly tested by the Benchmarks
+    dir_find():
+      - used to check if a file or subdir was in a given parrent_dir
+      - make sure that the parrent_dir is a dir and not a file
+    get_node_by_path():
+      - we had a recursive approach to this
+      - it would find a inode related to the absulute path given
+  - Dir Functions:
+    rufs_opendir:
+      - this would check if a given absulute path was a dir and if it existed 
+    rufs_readdir:
+      - used to list out all the dirents in a given dir
+      - used the filler function to put the dirnames
+    rufs_mkdir: 
+      - used to add a subdir at a given absulute path
+      - made sure that the dirname() was a dir and had enough space to add a dirent
+      - then we made a new dir with the normal subdirs '.' and '..' and made sure to link them properly.
+        dot would link to basename dir
+        dotdot would like to parrent_dir
+  - File Functions:
+    rufs_create:
+      - used to create a REG file
+      - did not allocate a data block yet, since the file size is 0 bytes
+    rufs_open:
+      - this would check if a given absulute path was a reg file and if it existed
+    rufs_write:
+      - write data to the data blocks
+      - made sure to use bio_read() on the starting block that contatined the offset, to make sure all data before offset was preserved
+      - same for the block contatining the end, so we dont write past offset+size 
+      - all full blocks in the middle could just be overridden, so no need to waste bio_read
+      - if new data blocks allocated, made sure to also update the inode
+    rufs_read:
+      - read data from a file
+      - similar to rufs_write
 
 
-Break down
-Make file:
-- make sure there is a dir at /tmp/dsp187/mountdir
-  - mkdir -p dsp187/mountdir && cd $_
-- run makefile
-- run 
-  - ./rufs -s /tmp/dsp187/mountdir
-  - -d
-  - ./rufs -s -d /tmp/dsp187/mountdir
-- to check if mounted: 
-  - see if findmnt cmd has this line"
-  - "│ └─/tmp/dsp187/mountdir                      rufs                                     fuse.rufs         rw,nosuid,nodev,relatime,user_id=90443,group_id=1905221765"
-- to unmount:
-  - run fusermount -u /tmp/dsp187/mountdir
-  - remove disk: rm -r dsp187
-Questions:
-- 
+    Once these were implemented, the rest of the fucntions were easy
+
 
 Block i/o layer:
 - all implemented
