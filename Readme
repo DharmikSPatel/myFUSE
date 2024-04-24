@@ -64,6 +64,7 @@ Implementation:
     get_node_by_path():
       - we had a recursive approach to this
       - it would find a inode related to the absulute path given
+    Once these were implemented, the rest of the fucntions were easy
   - Dir Functions:
     rufs_opendir:
       - this would check if a given absulute path was a dir and if it existed 
@@ -90,54 +91,5 @@ Implementation:
       - if new data blocks allocated, made sure to also update the inode
     rufs_read:
       - read data from a file
-      - similar to rufs_write
-
-
-    Once these were implemented, the rest of the fucntions were easy
-
-
-Block i/o layer:
-- all implemented
-
-Bitmap:
-- implement get_avail_ino(), and get_avail_blkno()
-
-Inode:
-- readi
-- writei
-
-Directory and Namei:
-- dir_find
-- dir_add
-- get_node_by_path
-
-The start:
-- rufs_mkfs()
-
-File System handlers
-- rufs_init
-- rufs_destroy
-- rufs_getattr
-
-- rufs_opendir - cd
-- rufs_readdir - ls
-- rufs_mkdir - mkdir
-
-
-- rufs_create - touch
-- rufs_open
-- rufs_read
-- rufs_write
-
-
-
-However we will say the following steps:
-1. rufs_mkfs, rufs_init, and rufs_destroy should probably be the first place to start as you need a “disk”
-to even start
-2. You should probably implement all the helper functions as you will make good use of them when
-implementing the rest of the rufs functions.
-3. The bitmap operations are the easiest to implement
-4. The inode helper operations (readi and writei) are the second easiest
-5. The directory operations are the hardest one
-6. Once you implement some of the helper functions, you can start using them within the rest of the rufs
-functions you have to implement
+      - similar to rufs_write.
+      - we made sure to only start reading from the block containing the offset and stoped at the block containing offset+size
