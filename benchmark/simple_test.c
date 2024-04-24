@@ -9,7 +9,7 @@
 #include <dirent.h>
 
 /* You need to change this macro to your TFS mount point*/
-#define TESTDIR "/tmp/mountdir"
+#define TESTDIR "/tmp/dsp187/mountdir"
 
 #define N_FILES 100
 #define BLOCKSIZE 4096
@@ -103,6 +103,7 @@ int main(int argc, char **argv) {
 		memset(subdir_path, 0, FSPATHLEN);
 
 		sprintf(subdir_path, "%s%d", TESTDIR "/files/dir", i);
+		// printf("MAKDIR |%s|\n", subdir_path);
 		if ((ret = mkdir(subdir_path, DIRPERM)) < 0) {
 			perror("mkdir");
 			printf("TEST 6: Sub-directory create failure \n");

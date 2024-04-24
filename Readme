@@ -1,13 +1,18 @@
 Break down
 Make file:
 - make sure there is a dir at /tmp/dsp187/mountdir
+  - mkdir -p dsp187/mountdir && cd $_
 - run makefile
-- run ./rufs -s /tmp/dsp187/mountdir
+- run 
+  - ./rufs -s /tmp/dsp187/mountdir
+  - -d
+  - ./rufs -s -d /tmp/dsp187/mountdir
 - to check if mounted: 
   - see if findmnt cmd has this line"
   - "│ └─/tmp/dsp187/mountdir                      rufs                                     fuse.rufs         rw,nosuid,nodev,relatime,user_id=90443,group_id=1905221765"
 - to unmount:
   - run fusermount -u /tmp/dsp187/mountdir
+  - remove disk: rm -r dsp187
 Questions:
 - 
 

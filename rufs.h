@@ -6,7 +6,7 @@
  *
  */
 
-//#include <linux/limits.h>
+#include <linux/limits.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -15,7 +15,14 @@
 
 #define MAGIC_NUM 0x5C3A
 #define MAX_INUM 1024
-#define MAX_DNUM 16384
+#define MAX_DNUM 8192
+#define VALID_INODE 1
+#define INVALID_INODE 0
+#define INVALID_DBLOCK -1
+#define VALID_DIRENT 1
+#define INVALID_DIRENT 0
+#define MAX_DIRECT_PTRS 16
+#define MAX_DIRENTS_PER_DIRECT_PTR (BLOCK_SIZE / sizeof(struct dirent))
 
 
 struct superblock {
@@ -28,7 +35,7 @@ struct superblock {
 	uint32_t	d_start_blk;		/* start block of data block region */
 };
 
-struct inode { //size of 256 on macbook
+struct inode {
 	uint16_t	ino;				/* inode number */
 	uint16_t	valid;				/* validity of the inode */
 	uint32_t	size;				/* size of the file */
